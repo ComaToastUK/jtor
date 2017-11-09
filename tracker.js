@@ -2,6 +2,7 @@
 const dgram = require("dgram");
 const Buffer = require("buffer").Buffer;
 const urlParse = require("url").parse;
+const crypto = require("crypto");
 
 module.exports.getPeers = (torrent, callback) => {
   const socket = dgram.createSocket("udp4"); // create udp4 socket
@@ -33,10 +34,23 @@ function respType(resp) {
 
 function buildConnReq() {
   // function to build connection request
+  const buf = Buffer.alloc(16); // create empty buffer with a size of 16 bytes
+  // writeUInt32BE writes an insigned 32-but int in big-endian format
+  buf.writeUInt32BE(0x417, 0); // write connection id
+  buf.writeUInt32BE(0x27101980, 4); // we need to write the 64-bit integer as 2 32-bit ints
+  buf.writeUInt32BE(0, 8); // 0 for action in next 4 bytes, offset value - 8 since int == 8 bytes
+  crypto.randomBytes(4).copy(buf, 12); // generate a random 4 byte buffer (random 32-bit int)
+  // .copy to copy the buffer into out buf buffer, 12 is the offset to begin writing the random int at
+  return buf;
 }
 
 function parseConnResp(resp) {
   // function to parse connection response
+  return {
+    action: resp.readUInt32BE(0), // read action and transactionId as unsigned 32-bit big-endian int
+    transactionId: resp.readUInt32BE(4),
+    connectionId: resp.slice(8) // get last 8 bytes
+  };
 }
 
 function buildAnnounceReq(connId) {
