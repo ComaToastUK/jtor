@@ -1,0 +1,17 @@
+{
+  "name": "jtor",
+  "version": "0.0.1",
+  "description": "A Node.js torrent client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Bittorrent",
+    "Client",
+    "Torrent",
+    "P2P"
+  ],
+  "author": "James Stubbs",
+  "license": "ISC"
+}
