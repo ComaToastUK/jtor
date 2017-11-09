@@ -13,5 +13,8 @@
     "P2P"
   ],
   "author": "James Stubbs",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bencode": "^1.0.0"
+  }
 }
